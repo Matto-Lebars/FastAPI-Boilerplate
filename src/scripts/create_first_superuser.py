@@ -1,16 +1,16 @@
 import asyncio
-import logging
 from datetime import datetime
 
+import structlog
 from sqlalchemy import select
 
+from ..app.core import logger as _  # noqa: F401 - configures structlog/handlers
 from ..app.core.database.engine import AsyncSession, async_session_factory
 from ..app.core.config import settings
 from ..app.core.auth.security import get_password_hash
 from ..app.models.user import User
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger(__name__)
 
 
 async def create_first_user(session: AsyncSession) -> None:
@@ -38,13 +38,13 @@ async def create_first_user(session: AsyncSession) -> None:
 
             session.add(new_admin)
             await session.commit()
-            logger.info(f"Admin user {username} created successfully.")
+            await logger.ainfo("Admin user created successfully.", username=username)
         else:
-            logger.info(f"Admin user {username} already exists.")
+            await logger.ainfo("Admin user already exists.", username=username)
 
     except Exception as e:
         await session.rollback()
-        logger.error(f"Error creating admin user: {e}")
+        await logger.aerror("Error creating admin user.", error=str(e))
 
 
 async def main():
