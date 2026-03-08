@@ -1,6 +1,7 @@
 services:
   app:
     container_name: app
+    platform: linux/amd64
     build:
       context: ../..
       dockerfile: docker/local_uvicorn/Dockerfile
@@ -22,6 +23,7 @@ services:
 
   db:
     container_name: db
+    platform: linux/amd64
     image: postgis/postgis:18-3.6-alpine
     env_file:
       - ../../src/.env
@@ -38,8 +40,9 @@ services:
       retries: 5
       start_period: 10s
 
-  create_superuser:
-    container_name: create_superuser
+  run_migrations:
+    container_name: run_migrations
+    platform: linux/amd64
     build:
       context: ../..
       dockerfile: docker/local_uvicorn/Dockerfile
@@ -50,8 +53,25 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      app:
-        condition: service_started
+    command: alembic -c src/alembic.ini upgrade head
+    volumes:
+      - ../../src:/app/src
+
+  create_superuser:
+    container_name: create_superuser
+    platform: linux/amd64
+    build:
+      context: ../..
+      dockerfile: docker/local_uvicorn/Dockerfile
+    env_file:
+      - ../../src/.env
+    environment:
+      - POSTGRES_SERVER=db
+    depends_on:
+      db:
+        condition: service_healthy
+      run_migrations:
+        condition: service_completed_successfully
     command: python -m src.scripts.create_first_superuser
     volumes:
       - ../../src:/app/src
