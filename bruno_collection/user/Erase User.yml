@@ -1,0 +1,20 @@
+info:
+  name: Erase User
+  type: http
+  seq: 6
+
+http:
+  method: DELETE
+  url: http://{{ip}}/api/v1/user/{{queryusername}}
+  auth: inherit
+
+runtime:
+  variables:
+    - name: queryusername
+      value: userson
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

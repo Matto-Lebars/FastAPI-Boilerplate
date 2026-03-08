@@ -1,0 +1,24 @@
+info:
+  name: Write User
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://{{ip}}/api/v1/user/
+  body:
+    type: json
+    data: |-
+      {
+        "name": "User Userson",
+        "username": "userson",
+        "email": "user.userson@example.com",
+        "password": "Str1ngst!"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

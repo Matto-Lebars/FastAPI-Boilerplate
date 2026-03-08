@@ -1,0 +1,29 @@
+info:
+  name: Patch User
+  type: http
+  seq: 5
+
+http:
+  method: PATCH
+  url: http://{{ip}}/api/v1/user/{{queryusername}}
+  body:
+    type: json
+    data: |-
+      {
+        "name": "User Userberg",
+        "username": "userberg",
+        "email": "user.userberg@example.com",
+        "profile_image_url": "https://www.profileimageurl.com"
+      }
+  auth: inherit
+
+runtime:
+  variables:
+    - name: queryusername
+      value: userson
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

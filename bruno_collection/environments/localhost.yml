@@ -1,0 +1,8 @@
+name: localhost
+variables:
+  - name: ip
+    value: localhost:8000
+  - name: username
+    value: domadev
+  - name: password
+    value: admin

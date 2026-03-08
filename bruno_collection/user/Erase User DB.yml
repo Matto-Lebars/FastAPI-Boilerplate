@@ -1,0 +1,20 @@
+info:
+  name: Erase User DB
+  type: http
+  seq: 7
+
+http:
+  method: DELETE
+  url: http://{{ip}}/api/v1/user/{{queryusername}}
+  auth: inherit
+
+runtime:
+  variables:
+    - name: queryusername
+      value: userberg
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
