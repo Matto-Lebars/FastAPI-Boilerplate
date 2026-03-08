@@ -1,0 +1,60 @@
+services:
+  app:
+    container_name: app
+    build:
+      context: ../..
+      dockerfile: docker/local_uvicorn/Dockerfile
+    # -------- Both of the following commands should be commented to run with nginx --------
+    # -------- replace with comment to run with gunicorn --------
+    command: uvicorn src.app.main:app --host 0.0.0.0 --port 8000 --reload
+    # command: gunicorn src.app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000
+    env_file:
+      - ../../src/.env
+    environment:
+      - POSTGRES_SERVER=db
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ../../src:/app/src
+
+  db:
+    container_name: db
+    image: postgis/postgis:18-3.6-alpine
+    env_file:
+      - ../../src/.env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+#    expose:
+#      - "5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  create_superuser:
+    container_name: create_superuser
+    build:
+      context: ../..
+      dockerfile: docker/local_uvicorn/Dockerfile
+    env_file:
+      - ../../src/.env
+    environment:
+      - POSTGRES_SERVER=db
+    depends_on:
+      db:
+        condition: service_healthy
+      app:
+        condition: service_started
+    command: python -m src.scripts.create_first_superuser
+    volumes:
+      - ../../src:/app/src
+
+volumes:
+  postgres-data:
