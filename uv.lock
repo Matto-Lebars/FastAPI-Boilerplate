@@ -385,7 +385,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "mkdocs", specifier = ">=1.6.1,<2.0" },
-    { name = "mkdocs-material", specifier = ">=9.7.4" },
+    { name = "mkdocs-material", specifier = ">=9.5.0" },
     { name = "pytest", specifier = ">=7.4.2" },
     { name = "ruff", specifier = ">=0.11.0" },
 ]

@@ -1,0 +1,98 @@
+site_name: FastAPI Boilerplate Documentation
+site_description: A modern, modular, and high-performance FastAPI boilerplate with async SQLAlchemy 2.0 and PostgreSQL.
+site_url: https://matto-lebars.github.io/core-backend/
+site_author: Matteo Le Bars
+repo_name: fastapi-boilerplate
+repo_url: https://github.com/matto-lebars/fastapi-boilerplate
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  font:
+    text: Inter
+    code: JetBrains Mono
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.footer
+    - navigation.indexes
+    - search.highlight
+    - search.share
+    - search.suggest
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - toc.follow
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search:
+      separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+  - tables
+  - footnotes
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/<your-username>
+
+extra_css:
+  - assets/css/custom.css
+
+nav:
+  - Home: index.md
+  - Guide:
+      - Getting Started: getting-started.md
+      - Architecture: architecture.md
+  - Development:
+      - Workflow: development/workflow.md
+      - Database & Migrations: development/database.md
+      - Security & Auth: development/security.md
+      - Configuration: development/configuration.md
+  - API Reference:
+      - v1 Endpoints: api/v1.md
+  - Operations:
+      - Deployment: operations/deployment.md
