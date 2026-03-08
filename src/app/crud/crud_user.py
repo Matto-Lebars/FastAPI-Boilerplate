@@ -1,4 +1,4 @@
-from src.app.core.helper.crud import HelperCRUD
+from src.app.core.helper.crud import CRUDBase
 from src.app.models.user import User
 
-crud_user: HelperCRUD[User] = HelperCRUD(model=User)
+crud_user: CRUDBase[User] = CRUDBase(model=User)

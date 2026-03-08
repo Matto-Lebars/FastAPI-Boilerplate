@@ -26,7 +26,7 @@ Usage example::
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from typing import Any, Generic, TypeVar
+from typing import Any, TypeVar
 
 import structlog
 from pydantic import BaseModel
@@ -42,7 +42,7 @@ UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
 logger = structlog.stdlib.get_logger(__name__)
 
 
-class HelperCRUD(Generic[ModelType]):
+class CRUDBase[ModelType]:
     """Generic async CRUD helper for SQLAlchemy models.
 
     Parameters
@@ -63,9 +63,7 @@ class HelperCRUD(Generic[ModelType]):
         """Return a model column by name, or raise ``ValueError``."""
         mapper = inspect(self.model)
         if column_name not in mapper.columns:
-            raise ValueError(
-                f"Column '{column_name}' does not exist on model '{self._model_name}'."
-            )
+            raise ValueError(f"Column '{column_name}' does not exist on model '{self._model_name}'.")
         return mapper.columns[column_name]
 
     def _apply_filters(self, stmt: Select, filters: dict[str, Any] | None) -> Select:
@@ -107,8 +105,7 @@ class HelperCRUD(Generic[ModelType]):
 
         if len(sort_columns) != len(sort_orders):
             raise ValueError(
-                f"sort_columns ({len(sort_columns)}) and sort_orders "
-                f"({len(sort_orders)}) must have the same length."
+                f"sort_columns ({len(sort_columns)}) and sort_orders ({len(sort_orders)}) must have the same length."
             )
 
         for col_name, order in zip(sort_columns, sort_orders, strict=True):
@@ -161,7 +158,7 @@ class HelperCRUD(Generic[ModelType]):
             raise
 
     # ------------------------------------------------------------------
-    # READ – single row
+    # READ - single row
     # ------------------------------------------------------------------
 
     async def get(
@@ -206,7 +203,7 @@ class HelperCRUD(Generic[ModelType]):
             raise
 
     # ------------------------------------------------------------------
-    # READ – multiple rows
+    # READ - multiple rows
     # ------------------------------------------------------------------
 
     async def get_multi(
@@ -359,10 +356,7 @@ class HelperCRUD(Generic[ModelType]):
         """Mark a row as deleted (soft delete) using ``is_deleted`` / ``deleted_at``."""
         log = logger.bind(model=self._model_name)
         if not hasattr(db_obj, "is_deleted"):
-            raise TypeError(
-                f"Model '{self._model_name}' does not support soft delete "
-                "(missing 'is_deleted' column)."
-            )
+            raise TypeError(f"Model '{self._model_name}' does not support soft delete (missing 'is_deleted' column).")
 
         try:
             db_obj.is_deleted = True  # type: ignore[attr-defined]
@@ -385,10 +379,7 @@ class HelperCRUD(Generic[ModelType]):
         """Restore a soft-deleted row."""
         log = logger.bind(model=self._model_name)
         if not hasattr(db_obj, "is_deleted"):
-            raise TypeError(
-                f"Model '{self._model_name}' does not support soft delete "
-                "(missing 'is_deleted' column)."
-            )
+            raise TypeError(f"Model '{self._model_name}' does not support soft delete (missing 'is_deleted' column).")
 
         try:
             db_obj.is_deleted = False  # type: ignore[attr-defined]
@@ -421,5 +412,3 @@ class HelperCRUD(Generic[ModelType]):
         except Exception:
             log.exception("hard_delete_failed")
             raise
-
-

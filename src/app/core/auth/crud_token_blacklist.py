@@ -3,11 +3,12 @@ from datetime import UTC, datetime
 from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.app.core.helper.crud import HelperCRUD
+from src.app.core.helper.crud import CRUDBase
+
 from .token_blacklist import TokenBlacklist
 
 
-class CRUDTokenBlacklist(HelperCRUD[TokenBlacklist]):
+class CRUDTokenBlacklist(CRUDBase[TokenBlacklist]):
     """Token-blacklist CRUD with an extra ``delete_expired`` helper."""
 
     async def delete_expired(self, db: AsyncSession) -> int:

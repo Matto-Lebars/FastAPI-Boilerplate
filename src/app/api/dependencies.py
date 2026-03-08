@@ -3,17 +3,17 @@ from typing import Annotated, Any
 from fastapi import Depends, HTTPException, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ..core.auth.jwt import TokenType, oauth2_scheme, verify_token
 from ..core.database.session import get_db
 from ..core.exceptions.http_exceptions import ForbiddenException, UnauthorizedException
 from ..core.logger import logging
-from ..core.auth.jwt import TokenType, oauth2_scheme, verify_token
 from ..crud.crud_user import crud_user
 
 logger = logging.getLogger(__name__)
 
 
 async def get_current_user(
-        token: Annotated[str, Depends(oauth2_scheme)], db: Annotated[AsyncSession, Depends(get_db)]
+    token: Annotated[str, Depends(oauth2_scheme)], db: Annotated[AsyncSession, Depends(get_db)]
 ) -> dict[str, Any]:
     token_data = await verify_token(token, TokenType.ACCESS, db)
     if token_data is None:

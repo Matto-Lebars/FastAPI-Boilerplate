@@ -1,5 +1,5 @@
 from datetime import UTC, datetime, timedelta
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 from fastapi.security import OAuth2PasswordBearer
@@ -7,9 +7,9 @@ from jose import JWTError, jwt
 from pydantic import SecretStr
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ..config import settings
 from .crud_token_blacklist import crud_token_blacklist
 from .schemas import TokenBlacklistCreate, TokenData
-from ..config import settings
 
 SECRET_KEY: SecretStr = settings.SECRET_KEY
 ALGORITHM = settings.ALGORITHM
@@ -19,7 +19,7 @@ REFRESH_TOKEN_EXPIRE_DAYS = settings.REFRESH_TOKEN_EXPIRE_DAYS
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/login")
 
 
-class TokenType(str, Enum):
+class TokenType(StrEnum):
     ACCESS = "access"
     REFRESH = "refresh"
 

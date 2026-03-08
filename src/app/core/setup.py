@@ -9,20 +9,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 from fastapi.openapi.utils import get_openapi
 
-from ..models import *  # noqa: F401
-from .auth.token_blacklist import TokenBlacklist # noqa: F401
-
-from .config import (
-    AppSettings,
-    CORSSettings,
-    DatabaseSettings,
-    EnvironmentOption,
-    EnvironmentSettings
-)
-from .database.engine import async_engine as engine
-from .database.models import Base
 from ..api.dependencies import get_current_superuser
 from ..middleware.logger_middleware import LoggerMiddleware
+from ..models import *  # noqa: F403
+from .auth.token_blacklist import TokenBlacklist  # noqa: F401
+from .config import AppSettings, CORSSettings, DatabaseSettings, EnvironmentOption, EnvironmentSettings
+from .database.engine import async_engine as engine
+from .database.models import Base
 
 
 # -------------- database --------------
@@ -38,13 +31,8 @@ async def set_threadpool_tokens(number_of_tokens: int = 100) -> None:
 
 
 def lifespan_factory(
-        settings: (
-                DatabaseSettings
-                | AppSettings
-                | CORSSettings
-                | EnvironmentSettings
-        ),
-        create_tables_on_start: bool = True,
+    settings: (DatabaseSettings | AppSettings | CORSSettings | EnvironmentSettings),
+    create_tables_on_start: bool = True,
 ) -> Callable[[FastAPI], _AsyncGeneratorContextManager[Any]]:
     """Factory to create a lifespan async context manager for a FastAPI app."""
 
@@ -73,16 +61,11 @@ def lifespan_factory(
 
 # -------------- application --------------
 def create_application(
-        router: APIRouter,
-        settings: (
-                DatabaseSettings
-                | AppSettings
-                | CORSSettings
-                | EnvironmentSettings
-        ),
-        create_tables_on_start: bool = True,
-        lifespan: Callable[[FastAPI], _AsyncGeneratorContextManager[Any]] | None = None,
-        **kwargs: Any,
+    router: APIRouter,
+    settings: (DatabaseSettings | AppSettings | CORSSettings | EnvironmentSettings),
+    create_tables_on_start: bool = True,
+    lifespan: Callable[[FastAPI], _AsyncGeneratorContextManager[Any]] | None = None,
+    **kwargs: Any,
 ) -> FastAPI:
     """Creates and configures a FastAPI application based on the provided settings.
 

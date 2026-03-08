@@ -68,7 +68,7 @@ SHARED_PROCESSORS: list[Processor] = [
 
 # Configure structlog globally
 structlog.configure(
-    processors=SHARED_PROCESSORS + [structlog.stdlib.ProcessorFormatter.wrap_for_formatter],
+    processors=[*SHARED_PROCESSORS, structlog.stdlib.ProcessorFormatter.wrap_for_formatter],
     logger_factory=structlog.stdlib.LoggerFactory(),
     cache_logger_on_first_use=True,
 )
@@ -81,7 +81,7 @@ def build_formatter(*, json_output: bool, pre_chain: list[Processor]) -> structl
     processors = [structlog.stdlib.ProcessorFormatter.remove_processors_meta, renderer]
 
     if json_output:
-        pre_chain = pre_chain + [structlog.processors.format_exc_info]
+        pre_chain = [*pre_chain, structlog.processors.format_exc_info]
 
     return structlog.stdlib.ProcessorFormatter(foreign_pre_chain=pre_chain, processors=processors)
 
@@ -99,7 +99,7 @@ file_handler = RotatingFileHandler(
 file_handler.setLevel(settings.FILE_LOG_LEVEL)
 file_handler.setFormatter(
     build_formatter(
-        json_output=settings.FILE_LOG_FORMAT_JSON, pre_chain=SHARED_PROCESSORS + [file_log_filter_processors]
+        json_output=settings.FILE_LOG_FORMAT_JSON, pre_chain=[*SHARED_PROCESSORS, file_log_filter_processors]
     )
 )
 
@@ -108,7 +108,7 @@ console_handler = logging.StreamHandler()
 console_handler.setLevel(settings.CONSOLE_LOG_LEVEL)
 console_handler.setFormatter(
     build_formatter(
-        json_output=settings.CONSOLE_LOG_FORMAT_JSON, pre_chain=SHARED_PROCESSORS + [console_log_filter_processors]
+        json_output=settings.CONSOLE_LOG_FORMAT_JSON, pre_chain=[*SHARED_PROCESSORS, console_log_filter_processors]
     )
 )
 

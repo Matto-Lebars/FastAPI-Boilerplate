@@ -5,9 +5,9 @@ import structlog
 from sqlalchemy import select
 
 from ..app.core import logger as _  # noqa: F401 - configures structlog/handlers
-from ..app.core.database.engine import AsyncSession, async_session_factory
-from ..app.core.config import settings
 from ..app.core.auth.security import get_password_hash
+from ..app.core.config import settings
+from ..app.core.database.engine import AsyncSession, async_session_factory
 from ..app.models.user import User
 
 logger = structlog.get_logger(__name__)

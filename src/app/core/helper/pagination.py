@@ -1,14 +1,12 @@
 """Reusable pagination utilities for list endpoints."""
 
-from typing import Any, Generic, TypeVar
+from typing import Any
 
 from pydantic import BaseModel
 
-T = TypeVar("T", bound=BaseModel)
-
 
 # -------------- schemas --------------
-class PaginatedListResponse(BaseModel, Generic[T]):
+class PaginatedListResponse[T: BaseModel](BaseModel):
     """Generic wrapper returned by every paginated list endpoint."""
 
     items: list[T]
@@ -51,5 +49,3 @@ def paginated_response(
         "page": page,
         "items_per_page": items_per_page,
     }
-
-

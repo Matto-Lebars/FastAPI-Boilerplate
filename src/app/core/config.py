@@ -1,5 +1,5 @@
 import os
-from enum import Enum
+from enum import StrEnum
 
 from pydantic import SecretStr, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -99,7 +99,7 @@ class ConsoleLoggerSettings(BaseSettings):
 
 
 # ------------- environment settings -------------
-class EnvironmentOption(str, Enum):
+class EnvironmentOption(StrEnum):
     LOCAL = "local"
     STAGING = "staging"
     PRODUCTION = "production"

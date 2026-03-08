@@ -1,6 +1,7 @@
+from typing import Literal
+
 import bcrypt
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Any, Literal
 
 from ...crud.crud_user import crud_user
 from ...models.user import User

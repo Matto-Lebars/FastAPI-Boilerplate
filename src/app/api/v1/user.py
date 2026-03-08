@@ -3,12 +3,13 @@ from typing import Annotated, Any
 from fastapi import APIRouter, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ...api.dependencies import get_current_superuser, get_current_user
-from ...core.database.session import get_db
-from ...core.exceptions.http_exceptions import DuplicateValueException, ForbiddenException, NotFoundException
 from app.core.helper.pagination import PaginatedListResponse, compute_offset, paginated_response
+
+from ...api.dependencies import get_current_superuser, get_current_user
 from ...core.auth.jwt import blacklist_token, oauth2_scheme
 from ...core.auth.security import get_password_hash
+from ...core.database.session import get_db
+from ...core.exceptions.http_exceptions import DuplicateValueException, ForbiddenException, NotFoundException
 from ...crud.crud_user import crud_user
 from ...schemas.user import UserCreate, UserCreateInternal, UserRead, UserUpdate
 
@@ -16,9 +17,7 @@ router = APIRouter(tags=["users"])
 
 
 @router.post("/user", response_model=UserRead, status_code=201)
-async def write_user(
-    request: Request, user: UserCreate, db: Annotated[AsyncSession, Depends(get_db)]
-) -> UserRead:
+async def write_user(request: Request, user: UserCreate, db: Annotated[AsyncSession, Depends(get_db)]) -> UserRead:
     email_row = await crud_user.exists(db=db, email=user.email)
     if email_row:
         raise DuplicateValueException("Email is already registered")
@@ -65,9 +64,7 @@ async def read_user_me(request: Request, current_user: Annotated[dict, Depends(g
 
 
 @router.get("/user/{username}", response_model=UserRead)
-async def read_user(
-    request: Request, username: str, db: Annotated[AsyncSession, Depends(get_db)]
-) -> dict[str, Any]:
+async def read_user(request: Request, username: str, db: Annotated[AsyncSession, Depends(get_db)]) -> dict[str, Any]:
     db_user = await crud_user.get(db=db, username=username, is_deleted=False)
     if db_user is None:
         raise NotFoundException("User not found")
